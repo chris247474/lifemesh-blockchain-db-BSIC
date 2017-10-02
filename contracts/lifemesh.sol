@@ -3,7 +3,7 @@ pragma solidity ^0.4.11;
 //import "github.com/Arachnid/solidity-stringutils/strings.sol";
 import "./strings.sol";
 
-contract DataContract {
+contract LifeMesh {
     using strings for *;
 
     /* TODO

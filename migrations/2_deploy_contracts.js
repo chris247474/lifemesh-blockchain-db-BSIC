@@ -1,14 +1,14 @@
-var ConvertLib = artifacts.require("./ConvertLib.sol");
+/*var ConvertLib = artifacts.require("./ConvertLib.sol");
 var MetaCoin = artifacts.require("./MetaCoin.sol");
-var SimpleStorage = artifacts.require("./SimpleStorage.sol");
+var SimpleStorage = artifacts.require("./SimpleStorage.sol");*/
 var Strings = artifacts.require("./strings.sol");
 var LifeMesh = artifacts.require("./lifemesh.sol");
 
 module.exports = function(deployer) {
-  deployer.deploy(ConvertLib);
+  /*deployer.deploy(ConvertLib);
   deployer.link(ConvertLib, MetaCoin);
   deployer.deploy(MetaCoin);
-  deployer.deploy(SimpleStorage);
+  deployer.deploy(SimpleStorage);*/
   deployer.deploy(Strings);
   deployer.link(Strings, LifeMesh);
   deployer.deploy(LifeMesh);

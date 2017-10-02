@@ -23,17 +23,34 @@ App = {
   },
 
   initContract: function() {
-      $.getJSON('SimpleStorage.json', function(data) {
-          // Get the necessary contract artifact file and instantiate it with truffle-contract.
-          var SimpleStorageArtifact = data;
-          App.contracts.SimpleStorage = TruffleContract(SimpleStorageArtifact);
+      $.getJSON('LifeMesh.json', function(data) {   
+        // Get the necessary contract artifact file and instantiate it with truffle-contract.
+        var LifeMeshDBArtifact = data;
+        App.contracts.LifeMeshDB = TruffleContract(LifeMeshDBArtifact);
 
-          // Set the provider for our contract.
-          App.contracts.SimpleStorage.setProvider(App.web3Provider);
+        // Set the provider for our contract.
+        App.contracts.LifeMeshDB.setProvider(App.web3Provider);
 
+        // Use our contract to retieve and mark the adopted pets.
+        return App.dbCall();
       });
 
-    return App.bindEvents();
+      return App.bindEvents();
+  },
+
+  dbCall: function() {
+    var dbInstance;
+    
+    App.contracts.LifeMeshDB.deployed().then(function(instance) {
+        console.log('smart contract deployed')
+        dbInstance = instance;
+        
+        return dbInstance.getProviderById(0).call();
+        }).then(function(id, name, location) {
+        console.log('getProvidersById successfully called: ' + id + ', ' + name + ', ' +location)
+        }).catch(function(err) {
+        console.log(err.message);
+        });
   },
 
   bindEvents: function() {
