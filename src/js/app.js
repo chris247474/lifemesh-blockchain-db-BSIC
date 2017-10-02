@@ -56,6 +56,40 @@ App = {
   bindEvents: function() {
     $(document).on('click', '#btnSet', App.handleSet);
     $(document).on('click', '#btnGet', App.handleGet);
+    $(document).on('submit','#addNeedForm',App.handleAddNeedForm);
+  },
+
+  handleAddNeedForm: function() {
+    
+    event.preventDefault();
+      var lifemeshInstance;
+
+    console.log(this.ownerid.value);
+    console.log(this.ownerName.value);
+    console.log(this.materialType.value);
+    console.log(this.quantity.value);
+    console.log(this.size.value);
+    console.log(this.long.value);
+    console.log(this.lat.value);
+    var inputForm = this;
+    
+      web3.eth.getAccounts(function(error, accounts) {
+          if (error) {
+              console.log(error);
+          }
+
+          var account = accounts[0];
+
+         App.contracts.LifeMeshDB.deployed().then(function(instance) {
+              lifemeshInstance = instance;
+              return lifemeshInstance.createNeed(inputForm.ownerid.value, inputForm.ownerName.value, inputForm.materialType.value, inputForm.quantity.value, inputForm.size.value, inputForm.long.value, inputForm.lat.value);
+          }).then(function(result) {
+              console.log('finished');
+          }).catch(function(err) {
+              console.log(err.message);
+              console.log('failed');
+          });
+      });
   },
 
   handleSet: function() {
