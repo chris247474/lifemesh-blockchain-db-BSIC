@@ -2,7 +2,7 @@
 var MetaCoin = artifacts.require("./MetaCoin.sol");
 var SimpleStorage = artifacts.require("./SimpleStorage.sol");*/
 var Strings = artifacts.require("./strings.sol");
-var LifeMesh = artifacts.require("./lifemesh.sol");
+var LifeMesh = artifacts.require("./LifeMesh.sol");
 
 module.exports = function(deployer) {
   /*deployer.deploy(ConvertLib);
