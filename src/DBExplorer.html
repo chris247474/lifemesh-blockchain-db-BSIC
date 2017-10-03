@@ -27,7 +27,7 @@
                             <a href="index.html" class=" nav-link"><i class="fa fa-home fa-home"></i>&nbsp;Dashboard</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#">Add Need</a>
+                            <a class="nav-link" href="AddNeed.html">Add Need</a>
                         </li>
                         <li class="nav-item">
                             <a href="AddOffer.html" class="nav-link">Add Offer</a>
@@ -52,16 +52,18 @@
             <div class="blockquote-footer">getProviderById(uint id)</div>
           </div>
                     <form id="GetProviderByIDForm" class="" action="" name="readdbform">
-                        
                         <div class="form-group"> 
                             
-                            <div class="form-group">
-                                <select autofocus required name="dropdown" form="GetProviderByIDForm" class="form-control">
-                                  <option value="volvo">Wait for auto populate</option>
-                                </select>
-                            </div>
+                            <br>
+                            <select name="dropdown" id="addProviderDropdownID" class="form-control">
+                              <option value="-1">Choose</option>
+                            </select>
                             
                             <br>
+                            
+                            <button type="reset" class="btn btn-primary" id="populateBtn">Populate</button>
+                            
+                            <br><br>
                             
                             <textarea rows="4" cols="50" class="form-control" name="textAreaResult">
                                 Provider #(id), (name), is based at (location)
@@ -69,7 +71,7 @@
                             
                             <br>
                         
-                        <button type="submit" class="btn btn-primary">Fetch Provider Details</button>
+                        <button type="submit" class="btn btn-primary" id="getProviderBtn">Fetch Provider Details</button>
                     </form>
                 </div>
             </div>

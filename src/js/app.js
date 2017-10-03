@@ -44,33 +44,141 @@ App = {
     App.contracts.LifeMeshDB.deployed().then(function(instance) {
         console.log('smart contract deployed')
         dbInstance = instance;
+        var inputForm = this;
         
-        return dbInstance.getProviderById(0).call();
-        }).then(function(id, name, location) {
-        console.log('getProvidersById successfully called: ' + id + ', ' + name + ', ' +location)
+        return dbInstance.getProvidersIntIndexArray(); // i used it as a function, not call ".call()" on it.
+        }).then(function(indexArr) {
+          console.log("there are " + indexArr.length + " providers in the db");
+          //var input = prompt("there are " + indexArr.length + " providers in the db", "42");//worked for a while : works again
         }).catch(function(err) {
-        console.log(err.message);
+          console.log(err.message);
         });
   },
 
   bindEvents: function() {
-    $(document).on('click', '#btnSet', App.handleSet);
-    $(document).on('click', '#btnGet', App.handleGet);
     $(document).on('submit','#addNeedForm',App.handleAddNeedForm);
+    $(document).on('reset', "#GetProviderByIDForm", App.handleOnLoadForInitialDBExplorerData);
+    $(document).on('submit','#GetProviderByIDForm', App.handleGetProviderByIDOnForm);
+    $(document).on('submit', "#addProviderForm", App.handleAddProviderForm);
+  },
+  
+  handleAddProviderForm: function () {
+    console.log("in handleAddProviderForm");
+    event.preventDefault();
+    var lifemeshInstance;
+
+    var inputForm = this;
+     
+    web3.eth.getAccounts(function(error, accounts) {
+        if (error) {
+            console.log(error);
+        }
+
+        var account = accounts[0];
+
+       App.contracts.LifeMeshDB.deployed().then(function(instance) {
+            console.log("passing args to createProvider: " + inputForm.providerName.value + ", " + inputForm.providerLocation.value);
+            
+            lifemeshInstance = instance;
+            var promiseobj = lifemeshInstance.createProvider(inputForm.providerName.value, inputForm.providerLocation.value);
+            
+            console.log("createProvider returned: " + promiseobj);
+            return promiseobj;
+        }).then(function(promiseObj) {
+            //to retrieve new provider's index/id, need to use Promises
+            console.log('fetched promise object: ' + promiseObj);
+            
+            inputForm.providerName.value = " ";
+            inputForm.providerLocation.value = " ";
+        }).catch(function(err) {
+            console.log("Error: " + err.message);
+        });
+    });
+  },
+  
+  handleOnLoadForInitialDBExplorerData: function () {
+    console.log("in handleOnLoadForInitialDBExplorerData");
+    event.preventDefault();
+    var lifemeshInstance;
+
+    var inputForm = this;
+    
+    web3.eth.getAccounts(function(error, accounts) {
+        if (error) {
+            console.log(error);
+        }
+
+        var account = accounts[0];
+
+       App.contracts.LifeMeshDB.deployed().then(function(instance) {
+            lifemeshInstance = instance;
+            return lifemeshInstance.getProvidersIntIndexArray();
+        }).then(function(result) {
+            console.log('fetched provider id: '+result);
+                       
+            for(providerID in result){
+              console.log("adding " + providerID + " to dropdown");
+              var option = document.createElement("option");
+              option.value = providerID;
+              option.innerHTML = providerID; // whatever property it has
+              // then append it to the select element
+              inputForm.dropdown.appendChild(option);
+            }
+            
+            console.log("getProviderById dropdown populated")
+        }).catch(function(err) {
+            console.log("Error: " + err.message);
+        });
+    });
+  },
+  
+  handleGetProviderByIDOnForm: function () {
+    console.log("in handleGetProviderByIDOnForm")
+    event.preventDefault();
+    var lifemeshInstance;
+
+    var inputForm = this;
+    
+    web3.eth.getAccounts(function(error, accounts) {
+        if (error) {
+            console.log(error);
+        }
+ 
+        var account = accounts[0];
+
+       App.contracts.LifeMeshDB.deployed().then(function(instance) {
+            lifemeshInstance = instance;
+            console.log("passing arg: "+ inputForm.addProviderDropdownID.value+" to getProviderById");
+            
+            lifemeshInstance.getProviderById(inputForm.addProviderDropdownID.value)
+            .then(function(id, name, location){
+              
+              console.log('fetched provider id: ' + id + ", name: " + name + ", location: "+ location);
+              
+              //parse result and assign to inputForm.textAreaResult
+              inputForm.textAreaResult.value = 'Provider ID: ' + id + "\nOrganization Name: " + name + "\nHQ Location: "+location;
+              
+            }).catch(function(err){
+              console.log("getProviderById Promise Error: " + err.message);
+            });
+            
+            
+        }).then(function() {//, name, location, promise) {
+            //console.log('fetched provider id: ' + id);// + ", name: " + name + ", location: "+ location);
+          
+            
+        }).catch(function(err) {
+            console.log("Error: " + err.message);
+        });
+    });
   },
 
   handleAddNeedForm: function() {
     
     event.preventDefault();
+    console.log('handleAddNeedForm');
       var lifemeshInstance;
 
-    console.log(this.ownerid.value);
-    console.log(this.ownerName.value);
-    console.log(this.materialType.value);
-    console.log(this.quantity.value);
-    console.log(this.size.value);
-    console.log(this.long.value);
-    console.log(this.lat.value);
     var inputForm = this;
     
       web3.eth.getAccounts(function(error, accounts) {
@@ -83,35 +191,6 @@ App = {
          App.contracts.LifeMeshDB.deployed().then(function(instance) {
               lifemeshInstance = instance;
               return lifemeshInstance.createNeed(inputForm.ownerid.value, inputForm.ownerName.value, inputForm.materialType.value, inputForm.quantity.value, inputForm.size.value, inputForm.long.value, inputForm.lat.value);
-          }).then(function(result) {
-              console.log('finished');
-          }).catch(function(err) {
-              console.log(err.message);
-              console.log('failed');
-          });
-      });
-  },
-
-  handleSet: function() {
-    event.preventDefault();
-
-    var input = prompt("Please enter a number to store in the contract", "42");
-
-    var number = parseInt(input);
-
-      var simpleStorageInstance;
-
-      web3.eth.getAccounts(function(error, accounts) {
-          if (error) {
-              console.log(error);
-          }
-
-          var account = accounts[0];
-
-          App.contracts.SimpleStorage.deployed().then(function(instance) {
-              simpleStorageInstance = instance;
-
-              return simpleStorageInstance.set(number, {from: account});
           }).then(function(result) {
               console.log('finished');
           }).catch(function(err) {

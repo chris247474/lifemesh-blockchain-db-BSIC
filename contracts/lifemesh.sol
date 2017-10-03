@@ -284,6 +284,15 @@ contract LifeMesh {
         providerID = providerCount;
         providerCount++;
     }
+    function getProvidersIntIndexArray() constant returns (uint[] provArray) {
+        uint[] memory arr = new uint[](providerCount);
+        
+        for (uint i = 0;i < providerCount;i++) {
+            arr[i] = i;
+        }
+
+        provArray = arr;
+    }
     function getProviderById(uint index)
     constant returns (uint idRet, string name, string location)
     {
@@ -295,7 +304,6 @@ contract LifeMesh {
 
                 return;
             }
-
         }*/
 
         if (index < providerCount) {

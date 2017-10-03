@@ -32,6 +32,12 @@
                         <li class="nav-item">
                             <a href="AddOffer.html" class="nav-link">Add Offer</a>
                         </li>
+                        <li class="nav-item">
+                            <a href="DBExplorer.html" class="nav-link">Fetch Data</a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="AddProvider.html" class="nav-link">Add New Provider</a>
+                        </li>
                     </ul>
                 </div>
             </div>
@@ -42,9 +48,9 @@
             <div class="row">
                 <div class="col-md-12" style="">
                     <div class="blockquote">
-            <p>Contract code</p>
-            <div class="blockquote-footer">createNeed(uint ownerid, string ownerName, string materialType, uint quantity, string size, string long, string lat)</div>
-          </div>
+                        <p>Contract code</p>
+                        <div class="blockquote-footer">createNeed(uint ownerid, string ownerName, string materialType, uint quantity, string size, string long, string lat)</div>
+                    </div>            
                     <form id="addNeedForm" class="" action="">
                         <div class="form-group"> <label>ownerid</label>
                             <input type="text" name="ownerid" class="form-control" placeholder="Enter ownerid" value="1"> </div>
@@ -68,7 +74,7 @@
                         <div class="form-group"> <label>lat</label>
                             <input type="text" name="lat" class="form-control" placeholder="Enter lat" value="14.5120614"> </div>
                             
-                        <button type="submit" class="btn btn-primary">Add Need</button>
+                        <button type="submit" class="btn btn-primary" id="addNeedBtn">Add Need</button>
                     </form>
                 </div>
             </div>
