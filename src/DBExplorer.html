@@ -33,10 +33,16 @@
                             <a href="AddOffer.html" class="nav-link">Add Offer</a>
                         </li>
                         <li class="nav-item">
-                            <a href="DBExplorer.html" class="active nav-link">Fetch Data</a>
+                            <a href="DBExplorer.html" class="active nav-link">View Providers</a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="RecipientReader.html" class="nav-link">View Recipients</a>
                         </li>
                         <li class="nav-item">
                             <a href="AddProvider.html" class="nav-link">Add New Provider</a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="AddRecipient.html" class="nav-link">Add New Recipient</a>
                         </li>
                     </ul>
                 </div>
@@ -48,9 +54,9 @@
             <div class="row">
                 <div class="col-md-12" style="">
                     <div class="blockquote">
-            <p>Contract code</p>
-            <div class="blockquote-footer">getProviderById(uint id)</div>
-          </div>
+                        <p><u>Ethereum DB Reader:</u></p>
+                        <div class="blockquote-footer">getProviderById(uint id)</div>
+                    </div>
                     <form id="GetProviderByIDForm" class="" action="" name="readdbform">
                         <div class="form-group"> 
                             
@@ -73,6 +79,8 @@
                         
                         <button type="submit" class="btn btn-primary" id="getProviderBtn">Fetch Provider Details</button>
                     </form>
+                    
+                    
                 </div>
             </div>
         </div>

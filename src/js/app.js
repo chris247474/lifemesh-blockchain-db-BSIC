@@ -42,24 +42,72 @@ App = {
     var dbInstance;
     
     App.contracts.LifeMeshDB.deployed().then(function(instance) {
-        console.log('smart contract deployed')
-        dbInstance = instance;
-        var inputForm = this;
-        
-        return dbInstance.getProvidersIntIndexArray(); // i used it as a function, not call ".call()" on it.
-        }).then(function(indexArr) {
-          console.log("there are " + indexArr.length + " providers in the db");
-          //var input = prompt("there are " + indexArr.length + " providers in the db", "42");//worked for a while : works again
-        }).catch(function(err) {
-          console.log(err.message);
-        });
+      console.log('smart contract deployed')
+      dbInstance = instance;
+      var inputForm = this;
+      
+      return dbInstance.getProvidersIntIndexArray(); // i used it as a function, not call ".call()" on it.
+    }).then(function(indexArr) {
+      console.log("there are " + indexArr.length + " providers in the db");
+    }).catch(function(err) {
+      console.log(err.message);
+    });
+    
+    App.contracts.LifeMeshDB.deployed().then(function(instance) {
+      console.log('smart contract deployed')
+      dbInstance = instance;
+      var inputForm = this;
+      
+      return dbInstance.getRecipientsIntIndexArray();
+    }).then(function(indexRecArr) {
+      console.log("there are " + indexRecArr.length + " recipients in the db");
+    }).catch(function(err) {
+      console.log(err.message);
+    }); 
   },
 
   bindEvents: function() {
     $(document).on('submit','#addNeedForm',App.handleAddNeedForm);
-    $(document).on('reset', "#GetProviderByIDForm", App.handleOnLoadForInitialDBExplorerData);
+    $(document).on('reset', "#GetProviderByIDForm", App.handleInitialProviderDropdownData);
     $(document).on('submit','#GetProviderByIDForm', App.handleGetProviderByIDOnForm);
+    $(document).on('reset', "#GetRecipientByIDForm", App.handleInitialRecipientDropdownData);//DropdownData);
+    $(document).on('submit','#GetRecipientByIDForm', App.handleGetRecipientByIDOnForm);
     $(document).on('submit', "#addProviderForm", App.handleAddProviderForm);
+    $(document).on('submit', "#addRecipientForm", App.handleAddRecipientForm);
+  },
+  
+  handleAddRecipientForm: function() {
+    console.log("in handleAddRecipientForm");
+    event.preventDefault();
+    var lifemeshInstance;
+
+    var inputForm = this;
+     
+    web3.eth.getAccounts(function(error, accounts) {
+        if (error) {
+            console.log(error);
+        }
+
+        var account = accounts[0];
+
+       App.contracts.LifeMeshDB.deployed().then(function(instance) {
+            console.log("passing args to createRecipient: " + inputForm.recipientName.value + ", " + inputForm.recipientLocation.value);
+            
+            lifemeshInstance = instance;
+            var promiseobj = lifemeshInstance.createRecipient(inputForm.recipientName.value, inputForm.recipientLocation.value);
+            
+            console.log("createRecipient returned: " + promiseobj);
+            return promiseobj;
+        }).then(function(promiseObj) {
+            //to retrieve new recipient's index/id, need to use Promises
+            console.log('fetched promise object: ' + promiseObj);
+            
+            inputForm.recipientName.value = " ";
+            inputForm.recipientLocation.value = " ";
+        }).catch(function(err) {
+            console.log("Error: " + err.message);
+        });
+    });
   },
   
   handleAddProviderForm: function () {
@@ -96,8 +144,8 @@ App = {
     });
   },
   
-  handleOnLoadForInitialDBExplorerData: function () {
-    console.log("in handleOnLoadForInitialDBExplorerData");
+  handleInitialProviderDropdownData: function () {
+    console.log("in handleInitialProviderDropdownData");
     event.preventDefault();
     var lifemeshInstance;
 
@@ -132,6 +180,86 @@ App = {
     });
   },
   
+  handleInitialRecipientDropdownData: function () {
+    console.log("in handleInitialRecipientDropdownData");
+    event.preventDefault();
+    var lifemeshInstance;
+
+    var inputForm = this;
+    
+    web3.eth.getAccounts(function(error, accounts) {
+        if (error) {
+            console.log(error);
+        }
+
+        var account = accounts[0];
+
+       App.contracts.LifeMeshDB.deployed().then(function(instance) {
+            lifemeshInstance = instance;
+            return lifemeshInstance.getRecipientsIntIndexArray();//.getRecipientsIntIndexArray();
+        }).then(function(result) { 
+            console.log('fetched recipient: '+result);
+                        
+            for(recipientID in result){
+              console.log("adding " + recipientID + " to dropdown");
+              var option = document.createElement("option");
+              option.value = recipientID;
+              option.innerHTML = recipientID; // whatever property it has
+              // then append it to the select element
+              inputForm.dropdownRecipient.appendChild(option);
+            }
+            
+            console.log("getRecipientById dropdown populated")
+        }).catch(function(err) {
+            console.log("Error: " + err.message);
+        });
+    });
+  },
+  
+  handleGetRecipientByIDOnForm: function () {
+    console.log("in handleGetRecipientByIDOnForm")
+    event.preventDefault();
+    var lifemeshInstance;
+
+    var inputForm = this;
+    
+    web3.eth.getAccounts(function(error, accounts) {
+        if (error) {
+            console.log(error);
+        }
+ 
+        var account = accounts[0];
+
+       App.contracts.LifeMeshDB.deployed().then(function(instance) {
+            lifemeshInstance = instance;
+            console.log("passing arg: "+ inputForm.addRecipientDropdownID.value+" to getRecipientById");
+            
+            lifemeshInstance.getRecipientById(inputForm.addRecipientDropdownID.value)
+            .then(function(result){
+                
+              var id = result[0];
+              var name = result[1]; 
+              var location = result[2];
+              console.log('fetched recipient id: ' + id + ", name: " + name + ", location: "+ location);
+              
+              //parse result and assign to inputForm.textAreaResult
+              inputForm.textAreaResultRecipient.value = 'Provider ID: ' + id + "\nOrganization Name: " + name + "\nHQ Location: "+location;
+              
+            }).catch(function(err){
+              console.log("getRecipientById Promise Error: " + err.message);
+            });
+            
+            
+        }).then(function() {//, name, location, promise) {
+            //console.log('fetched provider id: ' + id);// + ", name: " + name + ", location: "+ location);
+          
+            
+        }).catch(function(err) {
+            console.log("Error: " + err.message);
+        });
+    });
+  },
+  
   handleGetProviderByIDOnForm: function () {
     console.log("in handleGetProviderByIDOnForm")
     event.preventDefault();
@@ -151,8 +279,11 @@ App = {
             console.log("passing arg: "+ inputForm.addProviderDropdownID.value+" to getProviderById");
             
             lifemeshInstance.getProviderById(inputForm.addProviderDropdownID.value)
-            .then(function(id, name, location){
-              
+            .then(function(result){
+                
+              var id = result[0];
+              var name = result[1]; 
+              var location = result[2];
               console.log('fetched provider id: ' + id + ", name: " + name + ", location: "+ location);
               
               //parse result and assign to inputForm.textAreaResult

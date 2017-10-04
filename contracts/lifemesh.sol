@@ -351,6 +351,15 @@ contract LifeMesh {
             location = recipients[index].location;
         }
     }
+    function getRecipientsIntIndexArray() constant returns (uint[] recipientArray) {
+        uint[] memory temp = new uint[](recipientCount);
+        
+        for (uint i = 0;i < recipientCount;i++) {
+            temp[i] = i;
+        }
+
+        recipientArray = temp;
+    }
     function updateRecipientName(uint index, string name) returns (bool success) {
         if (index > recipientCount || !isRecipientsZeroPositionInitialized()) {
             success = false;
