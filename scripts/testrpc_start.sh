@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# Documentation : https://github.com/ethereumjs/testrpc
 testrpc \
 	--deterministic \
 	--accounts 5 \
