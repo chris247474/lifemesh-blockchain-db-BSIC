@@ -43,6 +43,7 @@ App = {
     
     App.contracts.LifeMeshDB.deployed().then(function(instance) {
       console.log('smart contract deployed')
+      alert("DB ready");
       dbInstance = instance;
       var inputForm = this;
       
@@ -54,7 +55,7 @@ App = {
     });
     
     App.contracts.LifeMeshDB.deployed().then(function(instance) {
-      console.log('smart contract deployed')
+      console.log('smart contract deployed');
       dbInstance = instance;
       var inputForm = this;
       
@@ -173,7 +174,8 @@ App = {
               inputForm.dropdown.appendChild(option);
             }
             
-            console.log("getProviderById dropdown populated")
+            alert("getProviderById dropdown populated");
+            console.log("getProviderById dropdown populated");
         }).catch(function(err) {
             console.log("Error: " + err.message);
         });
@@ -209,7 +211,8 @@ App = {
               inputForm.dropdownRecipient.appendChild(option);
             }
             
-            console.log("getRecipientById dropdown populated")
+            alert("getProviderById dropdown populated");
+            console.log("getRecipientById dropdown populated");
         }).catch(function(err) {
             console.log("Error: " + err.message);
         });
